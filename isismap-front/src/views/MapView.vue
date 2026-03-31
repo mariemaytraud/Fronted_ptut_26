@@ -3,9 +3,14 @@
     
     <div class="toolbar">
       <div class="date-controls" v-if="currentView === 'jour'">
-        <span>Le <input type="date" v-model="selectedDate" /></span>
-        <span>à <input type="time" v-model="selectedTime" /></span>
-        <button class="btn-now" @click="setToNow">Maintenant</button>
+        
+        <label class="toggle-realtime">
+          <input type="checkbox" v-model="isNowActive" />
+          Temps réel
+        </label>
+
+        <span>Le <input type="date" v-model="selectedDate" :disabled="isNowActive" /></span>
+        <span>à <input type="time" v-model="selectedTime" :disabled="isNowActive" /></span>
       </div>
 
       <div class="date-controls" v-else>
@@ -160,12 +165,82 @@ const salleProps = computed(() => ({
   onClickSalle: ouvrirModale 
 }))
 
-const setToNow = () => {
+import { ref, computed, watch, onUnmounted } from 'vue' // <-- Ajoute watch et onUnmounted ici !
+import { useIsismapStore } from '../stores/isismap'
+import Salle from '../components/Salle.vue'
+import ModaleSalle from '../components/ModaleSalle.vue' 
+
+const store = useIsismapStore()
+
+// ---- GESTION DE LA MODALE ----
+const salleSelectionnee = ref(null) 
+
+const ouvrirModale = (salle) => {
+  if (currentView.value === 'jour') return; // On bloque le clic en mode jour
+  salleSelectionnee.value = salle 
+}
+const fermerModale = () => {
+  salleSelectionnee.value = null 
+}
+
+// ---- GESTION DES DATES ET VUES ----
+const currentView = ref('jour')
+
+// Nos variables de date/heure
+const selectedDate = ref('')
+const selectedTime = ref('')
+
+// -- NOUVEAU : Logique du "Temps Réel" --
+const isNowActive = ref(true) // Activé par défaut au chargement
+let intervalTimer = null // Un minuteur pour rafraîchir l'heure
+
+const updateToNow = () => {
   const current = new Date()
   selectedDate.value = current.toISOString().split('T')[0]
   selectedTime.value = current.toTimeString().slice(0, 5)
 }
 
+// "watch" observe la case à cocher. Si elle change, il exécute ce code :
+watch(isNowActive, (isActive) => {
+  if (isActive) {
+    updateToNow() // On met à l'heure tout de suite
+    intervalTimer = setInterval(updateToNow, 60000) // Puis on met à jour chaque minute (60000ms)
+  } else {
+    clearInterval(intervalTimer) // On arrête le minuteur si l'utilisateur décoche
+  }
+}, { immediate: true }) // immediate:true force l'exécution au chargement de la page !
+
+// On nettoie le minuteur si on quitte la page (bonne pratique)
+onUnmounted(() => {
+  clearInterval(intervalTimer)
+})
+// ----------------------------------------
+
+const dateDebut = ref(new Date().toISOString().split('T')[0])
+const uneSemainePlusTard = new Date()
+uneSemainePlusTard.setDate(uneSemainePlusTard.getDate() + 7)
+const dateFin = ref(uneSemainePlusTard.toISOString().split('T')[0])
+
+const salleProps = computed(() => ({
+  currentView: currentView.value,
+  selectedDate: selectedDate.value,
+  selectedTime: selectedTime.value,
+  dateDebut: dateDebut.value,
+  dateFin: dateFin.value,
+  onClickSalle: ouvrirModale 
+}))
+
+const onViewChange = () => {
+  const start = new Date(dateDebut.value)
+  if (currentView.value === 'semaine') {
+    start.setDate(start.getDate() + 7)
+  } else if (currentView.value === 'mois') {
+    start.setMonth(start.getMonth() + 1)
+  }
+  dateFin.value = start.toISOString().split('T')[0]
+}
+
+const getSalle = (id) => store.salles.find(s => s.id === id) || { id, libelle: id }
 const onViewChange = () => {
   const start = new Date(dateDebut.value)
   if (currentView.value === 'semaine') {
@@ -182,9 +257,41 @@ const getSalle = (id) => store.salles.find(s => s.id === id) || { id, libelle: i
 <style scoped>
 .map-page { display: flex; flex-direction: column; gap: 2rem; }
 .toolbar { display: flex; justify-content: space-between; background-color: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.btn-now { margin-left: 10px; background-color: var(--color-primary); color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }
-.btn-now:hover { background-color: var(--color-primary-dark); }
-.date-controls input, .view-controls select { padding: 0.3rem; margin-left: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+/* Supprime .btn-now et .btn-now:hover, et ajoute ça à la place : */
+.toggle-realtime {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  color: var(--color-primary);
+  cursor: pointer;
+  margin-right: 15px;
+  background: rgba(124, 80, 220, 0.1); /* Petit fond violet clair */
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.toggle-realtime input {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+/* Style quand on décoche le Temps réel (les inputs redeviennent normaux) */
+.date-controls input { 
+  padding: 0.3rem; 
+  margin-left: 0.5rem; 
+  border: 1px solid #ccc; 
+  border-radius: 4px; 
+}
+
+/* Style quand le Temps réel est coché (on grise les inputs) */
+.date-controls input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+}.date-controls input, .view-controls select { padding: 0.3rem; margin-left: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
 
 .map-content { display: flex; gap: 2rem; align-items: flex-start; }
 .building-map { flex: 1; display: flex; flex-direction: column; gap: 2rem; }
