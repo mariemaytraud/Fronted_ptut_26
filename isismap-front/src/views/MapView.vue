@@ -23,7 +23,9 @@
     </div>
 
     <div class="map-content">
+      
       <div class="building-map">
+        
         <div class="floor">
           <div class="floor-label">1ERE ETAGE</div>
           <div class="architecture-grid">
@@ -83,6 +85,7 @@
             </div>
           </div>
         </div>
+
       </div>
 
       <div class="legend">
@@ -102,9 +105,16 @@
           <div class="legend-item"><div class="color-box" style="background-color: #d8c8f5"></div><span>Peu occupé</span></div>
           <div class="legend-item"><div class="color-box" style="background-color: #e2e2e2"></div><span>Libre</span></div>
         </div>
-
       </div>
+
     </div>
+
+    <ModaleSalle 
+      v-if="salleSelectionnee" 
+      :salle="salleSelectionnee" 
+      @fermer="fermerModale" 
+    />
+
   </div>
 </template>
 
@@ -112,30 +122,39 @@
 import { ref, computed } from 'vue'
 import { useIsismapStore } from '../stores/isismap'
 import Salle from '../components/Salle.vue'
+import ModaleSalle from '../components/ModaleSalle.vue' 
 
 const store = useIsismapStore()
 
-// États de l'interface
-const currentView = ref('jour')
+// ---- GESTION DE LA MODALE ----
+const salleSelectionnee = ref(null) 
 
-// Dates pour le mode "Jour"
+const ouvrirModale = (salle) => {
+  salleSelectionnee.value = salle 
+}
+const fermerModale = () => {
+  salleSelectionnee.value = null 
+}
+
+// ---- GESTION DES DATES ET VUES ----
+const currentView = ref('jour')
 const now = new Date()
 const selectedDate = ref(now.toISOString().split('T')[0])
 const selectedTime = ref(now.toTimeString().slice(0, 5))
 
-// Dates pour les modes "Semaine" et "Mois"
 const dateDebut = ref(now.toISOString().split('T')[0])
 const uneSemainePlusTard = new Date(now)
 uneSemainePlusTard.setDate(now.getDate() + 7)
 const dateFin = ref(uneSemainePlusTard.toISOString().split('T')[0])
 
-// On regroupe les props pour éviter de les réécrire sur chaque salle (v-bind)
+// v-bind regroupe toutes ces propriétés pour les envoyer aux composants <Salle />
 const salleProps = computed(() => ({
   currentView: currentView.value,
   selectedDate: selectedDate.value,
   selectedTime: selectedTime.value,
   dateDebut: dateDebut.value,
-  dateFin: dateFin.value
+  dateFin: dateFin.value,
+  onClickSalle: ouvrirModale 
 }))
 
 const setToNow = () => {
@@ -144,7 +163,6 @@ const setToNow = () => {
   selectedTime.value = current.toTimeString().slice(0, 5)
 }
 
-// Pour ajuster automatiquement la date de fin quand on change de vue
 const onViewChange = () => {
   const start = new Date(dateDebut.value)
   if (currentView.value === 'semaine') {
@@ -159,7 +177,6 @@ const getSalle = (id) => store.salles.find(s => s.id === id) || { id, libelle: i
 </script>
 
 <style scoped>
-/* Le CSS reste le même qu'avant ! J'ai juste ajouté un petit style pour la légende */
 .map-page { display: flex; flex-direction: column; gap: 2rem; }
 .toolbar { display: flex; justify-content: space-between; background-color: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .btn-now { margin-left: 10px; background-color: var(--color-primary); color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }

@@ -17,11 +17,11 @@ const props = defineProps({
   dateDebut: String,
   dateFin: String
 })
-
+const emit = defineEmits(['clickSalle'])
 const store = useIsismapStore()
 
 const onClick = () => {
-  alert(`Bientôt, le détail de la salle ${props.salle.libelle} s'ouvrira ici !`)
+  emit('clickSalle', props.salle)
 }
 
 // ---- LOGIQUE MODE JOUR (Temps réel) ----
