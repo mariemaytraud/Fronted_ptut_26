@@ -1,12 +1,14 @@
-// src/router/index.js
-// ... (garder les imports identiques)
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+import MapView from '../views/MapView.vue'
+import StatsView from '../views/StatsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/map' // On redirige l'accueil directement vers la carte
+      redirect: '/map' // Notre fameuse redirection directe
     },
     {
       path: '/map',
@@ -20,3 +22,6 @@ const router = createRouter({
     }
   ]
 })
+
+// C'EST CETTE LIGNE QUI MANQUAIT PROBABLEMENT ! 👇
+export default router
