@@ -28,16 +28,13 @@ export const useIsismapStore = defineStore('isismap', {
       { id: 'FIA4', libelle: 'FIA4', couleur: '#0000ff' }, // Bleu foncé
       { id: 'FIA5', libelle: 'FIA5', couleur: '#32cd32' }  // Vert
     ],
-    // Quelques créneaux pour voir si ça marche (basés sur ta maquette)
+   // ... (garde tes salles et promotions comme avant)
+    
+    // On remet des vraies dates pour que le filtre fonctionne !
     creneaux: [
-      { id: 1, id_salle: 'B108', id_prom: 'FIE4', enseignant: 'Mme Champ' },
-      { id: 2, id_salle: 'B103', id_prom: 'FIE1', enseignant: 'Mr Charrier' },
-      { id: 3, id_salle: 'B109', id_prom: 'FIE5', enseignant: 'Mr Ourettes' },
-      { id: 4, id_salle: 'B106', id_prom: 'FIE3', enseignant: 'Mr Gleyzes' },
-      { id: 5, id_salle: 'B102', id_prom: 'FIA5', enseignant: 'Mr Barreau' },
-      { id: 6, id_salle: 'B011', id_prom: 'FIA4', enseignant: 'Mr Singer' },
-      { id: 7, id_salle: 'B007', id_prom: 'FIE2', enseignant: 'Mme Mula' },
-      { id: 8, id_salle: 'B010', id_prom: 'FIA3', enseignant: 'Mr Pitearth' }
+      { id: 1, id_salle: 'B108', id_prom: 'FIE4', enseignant: 'Mme Champ', debut: '2026-03-31T08:00', fin: '2026-03-31T18:00' },
+      { id: 2, id_salle: 'B011', id_prom: 'FIA4', enseignant: 'Mr Singer', debut: '2026-03-31T13:00', fin: '2026-03-31T17:00' },
+      { id: 3, id_salle: 'B103', id_prom: 'FIE1', enseignant: 'Mr Charrier', debut: '2026-03-31T10:00', fin: '2026-03-31T12:00' }
     ]
   })
-})
+}) 
