@@ -1,5 +1,5 @@
 <template>
-  <div class="room" :style="{ backgroundColor: roomColor }" @click="onClick">
+  <div class="room" :class="{ 'is-clickable': currentView !== 'jour' }" :style="{ backgroundColor: roomColor }" @click="onClick">
     <span class="room-name">{{ salle.libelle }}</span>
     <span class="room-info" v-if="roomInfo && currentView === 'jour'">{{ roomInfo }}</span>
   </div>
@@ -90,10 +90,16 @@ const roomColor = computed(() => {
 .room {
   flex: 1; min-height: 80px; min-width: 60px;
   border-radius: 4px; display: flex; flex-direction: column;
-  justify-content: center; align-items: center; cursor: pointer;
+  justify-content: center; align-items: center; 
   color: white; text-align: center; padding: 5px;
   transition: transform 0.1s, background-color 0.3s;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  /* J'ai enlevé le cursor: pointer ici */
+}
+
+/* Et je l'ai mis ici ! */
+.room.is-clickable {
+  cursor: pointer;
 }
 .room[style*="rgb(226, 226, 226)"], .room[style*="#e2e2e2"] { color: #555; }
 .room:hover { transform: scale(1.05); filter: brightness(1.1); }

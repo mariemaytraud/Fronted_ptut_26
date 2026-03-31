@@ -126,10 +126,13 @@ import ModaleSalle from '../components/ModaleSalle.vue'
 
 const store = useIsismapStore()
 
-// ---- GESTION DE LA MODALE ----
 const salleSelectionnee = ref(null) 
 
+
 const ouvrirModale = (salle) => {
+  // On bloque l'ouverture si on est en mode "jour" !
+  if (currentView.value === 'jour') return; 
+  
   salleSelectionnee.value = salle 
 }
 const fermerModale = () => {
