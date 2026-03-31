@@ -124,48 +124,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useIsismapStore } from '../stores/isismap'
-import Salle from '../components/Salle.vue'
-import ModaleSalle from '../components/ModaleSalle.vue' 
-
-const store = useIsismapStore()
-
-const salleSelectionnee = ref(null) 
-
-
-const ouvrirModale = (salle) => {
-  // On bloque l'ouverture si on est en mode "jour" !
-  if (currentView.value === 'jour') return; 
-  
-  salleSelectionnee.value = salle 
-}
-const fermerModale = () => {
-  salleSelectionnee.value = null 
-}
-
-// ---- GESTION DES DATES ET VUES ----
-const currentView = ref('jour')
-const now = new Date()
-const selectedDate = ref(now.toISOString().split('T')[0])
-const selectedTime = ref(now.toTimeString().slice(0, 5))
-
-const dateDebut = ref(now.toISOString().split('T')[0])
-const uneSemainePlusTard = new Date(now)
-uneSemainePlusTard.setDate(now.getDate() + 7)
-const dateFin = ref(uneSemainePlusTard.toISOString().split('T')[0])
-
-// v-bind regroupe toutes ces propriétés pour les envoyer aux composants <Salle />
-const salleProps = computed(() => ({
-  currentView: currentView.value,
-  selectedDate: selectedDate.value,
-  selectedTime: selectedTime.value,
-  dateDebut: dateDebut.value,
-  dateFin: dateFin.value,
-  onClickSalle: ouvrirModale 
-}))
-
-import { ref, computed, watch, onUnmounted } from 'vue' // <-- Ajoute watch et onUnmounted ici !
+// UN SEUL IMPORT POUR TOUT LE MONDE !
+import { ref, computed, watch, onUnmounted } from 'vue' 
 import { useIsismapStore } from '../stores/isismap'
 import Salle from '../components/Salle.vue'
 import ModaleSalle from '../components/ModaleSalle.vue' 
@@ -176,7 +136,7 @@ const store = useIsismapStore()
 const salleSelectionnee = ref(null) 
 
 const ouvrirModale = (salle) => {
-  if (currentView.value === 'jour') return; // On bloque le clic en mode jour
+  if (currentView.value === 'jour') return; // Bloqué en mode jour
   salleSelectionnee.value = salle 
 }
 const fermerModale = () => {
@@ -186,13 +146,12 @@ const fermerModale = () => {
 // ---- GESTION DES DATES ET VUES ----
 const currentView = ref('jour')
 
-// Nos variables de date/heure
 const selectedDate = ref('')
 const selectedTime = ref('')
 
-// -- NOUVEAU : Logique du "Temps Réel" --
-const isNowActive = ref(true) // Activé par défaut au chargement
-let intervalTimer = null // Un minuteur pour rafraîchir l'heure
+// -- Temps Réel --
+const isNowActive = ref(true) 
+let intervalTimer = null 
 
 const updateToNow = () => {
   const current = new Date()
@@ -200,21 +159,18 @@ const updateToNow = () => {
   selectedTime.value = current.toTimeString().slice(0, 5)
 }
 
-// "watch" observe la case à cocher. Si elle change, il exécute ce code :
 watch(isNowActive, (isActive) => {
   if (isActive) {
-    updateToNow() // On met à l'heure tout de suite
-    intervalTimer = setInterval(updateToNow, 60000) // Puis on met à jour chaque minute (60000ms)
+    updateToNow() 
+    intervalTimer = setInterval(updateToNow, 60000) 
   } else {
-    clearInterval(intervalTimer) // On arrête le minuteur si l'utilisateur décoche
+    clearInterval(intervalTimer) 
   }
-}, { immediate: true }) // immediate:true force l'exécution au chargement de la page !
+}, { immediate: true }) 
 
-// On nettoie le minuteur si on quitte la page (bonne pratique)
 onUnmounted(() => {
   clearInterval(intervalTimer)
 })
-// ----------------------------------------
 
 const dateDebut = ref(new Date().toISOString().split('T')[0])
 const uneSemainePlusTard = new Date()
@@ -230,17 +186,6 @@ const salleProps = computed(() => ({
   onClickSalle: ouvrirModale 
 }))
 
-const onViewChange = () => {
-  const start = new Date(dateDebut.value)
-  if (currentView.value === 'semaine') {
-    start.setDate(start.getDate() + 7)
-  } else if (currentView.value === 'mois') {
-    start.setMonth(start.getMonth() + 1)
-  }
-  dateFin.value = start.toISOString().split('T')[0]
-}
-
-const getSalle = (id) => store.salles.find(s => s.id === id) || { id, libelle: id }
 const onViewChange = () => {
   const start = new Date(dateDebut.value)
   if (currentView.value === 'semaine') {
