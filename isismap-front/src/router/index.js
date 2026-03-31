@@ -1,29 +1,22 @@
-import { createRouter, createWebHistory } from 'vue-router'
-
-// On importe nos futures vues (on les créera juste après)
-import HomeView from '../views/HomeView.vue'
-import MapView from '../views/MapView.vue'
-import StatsView from '../views/StatsView.vue'
+// src/router/index.js
+// ... (garder les imports identiques)
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView // Page d'accueil : Choix du rôle
+      redirect: '/map' // On redirige l'accueil directement vers la carte
     },
     {
       path: '/map',
       name: 'map',
-      component: MapView // Pages communes : Visualisation des salles
+      component: MapView
     },
     {
       path: '/stats',
       name: 'stats',
-      component: StatsView // Page d'administration : Statistiques
+      component: StatsView
     }
   ]
 })
-
-export default router

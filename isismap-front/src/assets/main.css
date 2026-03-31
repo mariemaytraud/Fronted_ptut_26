@@ -1,8 +1,7 @@
-/* src/assets/main.css */
+
 :root {
-  /* Charte graphique ISISMap */
   --color-primary: #7c50dc; /* Violet principal */
-  --color-primary-dark: #2f0d73; /* Violet foncé */
+  --color-primary-dark: #2f0d73; /* Violet fonce */
   --color-secondary: #ac54c7; /* Rose/Violet */
   --color-accent: #f26958; /* Corail */
   --color-yellow: #f5a028; /* Jaune/Orange */
