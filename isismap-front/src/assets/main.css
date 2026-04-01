@@ -15,12 +15,12 @@
 
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif; /* On fera plus joli plus tard si besoin */
+  font-family: 'Arial', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
 }
 
-/* Un style de base pour tes futurs boutons */
+
 .btn {
   background-color: var(--color-primary);
   color: white;

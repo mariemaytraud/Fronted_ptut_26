@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 
-// --- 1. NOTRE GÉNÉRATEUR DE FAUSSES DONNÉES ---
+// GÉNÉRATEUR DE FAUSSES DONNÉES
 const genererCreneauxMasse = () => {
   const creneauxGeneres = []
-  let idCounter = 1000 // On commence à 1000 pour ne pas écraser nos tests d'aujourd'hui
+  let idCounter = 1000 
   
   const profs = ['Mr Singer', 'Mme Champ', 'Mr Djemaa', 'Mr Barreau', 'Mr Ourettes', 'Mme Mula', 'Mr Charrier']
   const promos = ['FIE1', 'FIE2', 'FIE3', 'FIE4', 'FIE5', 'FIA3', 'FIA4']
@@ -19,18 +19,18 @@ const genererCreneauxMasse = () => {
 
     const dateStr = d.toISOString().split('T')[0] // Format YYYY-MM-DD
 
-    // --- SCÉNARIOS DE TEST POUR LA HEATMAP ---
+    //SCÉNARIOS DE TEST POUR LA HEATMAP 
 
-    // 1. La salle B011 est TOUJOURS blindée (Pour tester le Violet Foncé 100%)
+    //La salle B011 est TOUJOURS blindée (Pour tester le Violet Foncé 100%)
     creneauxGeneres.push({ id: idCounter++, id_salle: 'B011', id_prom: 'FIE1', enseignant: 'Mr Singer', debut: `${dateStr}T08:00:00`, fin: `${dateStr}T12:00:00` })
     creneauxGeneres.push({ id: idCounter++, id_salle: 'B011', id_prom: 'FIE2', enseignant: 'Mme Mula', debut: `${dateStr}T13:30:00`, fin: `${dateStr}T17:30:00` })
 
-    // 2. La salle B108 est modérément occupée (Environ 1 jour sur 2, le matin)
+    // La salle B108 est modérément occupée (Environ 1 jour sur 2, le matin)
     if (Math.random() > 0.5) {
       creneauxGeneres.push({ id: idCounter++, id_salle: 'B108', id_prom: 'FIE4', enseignant: 'Mme Champ', debut: `${dateStr}T08:00:00`, fin: `${dateStr}T12:00:00` })
     }
 
-    // 3. La salle B105 est presque toujours vide (1 chance sur 10 d'avoir un cours)
+    // La salle B105 est presque toujours vide (1 chance sur 10 d'avoir un cours)
     if (Math.random() > 0.9) {
       creneauxGeneres.push({ id: idCounter++, id_salle: 'B105', id_prom: 'FIA4', enseignant: 'Mr Barreau', debut: `${dateStr}T14:00:00`, fin: `${dateStr}T16:00:00` })
     }
@@ -58,7 +58,7 @@ const genererCreneauxMasse = () => {
   return creneauxGeneres
 }
 
-// --- 2. NOTRE MAGASIN DE DONNÉES PINIA ---
+//  NOTRE MAGASIN DE DONNÉES PINIA ---
 export const useIsismapStore = defineStore('isismap', {
   state: () => ({
     salles: [

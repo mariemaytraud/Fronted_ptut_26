@@ -2,7 +2,6 @@
   <div class="stats-page">
     <div class="header">
       <h1>Tableau de bord des Statistiques</h1>
-      <p>Analyse de l'occupation des locaux selon vos critères</p>
     </div>
 
     <div class="toolbar">
@@ -71,36 +70,36 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale,
 
 const store = useIsismapStore()
 
-// --- 1. VARIABLES DES FILTRES ---
+// var des filtres
 const dateDebut = ref('2026-04-01')
 const dateFin = ref('2026-04-30')
 const selectedSalle = ref('') // Vide = Toutes les salles
 const selectedProf = ref('')  // Vide = Tous les profs
 
-// --- 2. LISTE DYNAMIQUE DES PROFS ---
+//LISTE DYNAMIQUE DES PROFS
 // On parcourt tous les créneaux pour extraire les noms des profs sans doublons
 const listeProfs = computed(() => {
   const profs = store.creneaux.map(c => c.enseignant)
   return [...new Set(profs)].sort() // Le Set enlève les doublons, sort() trie par ordre alphabétique
 })
 
-// --- 3. LE SUPER FILTRE MULTI-CRITÈRES ---
+//LE FILTRE MULTI-CRITÈRES
 const creneauxFiltres = computed(() => {
   const start = new Date(`${dateDebut.value}T00:00:00`)
   const end = new Date(`${dateFin.value}T23:59:59`)
   
   return store.creneaux.filter(c => {
-    // A. Est-ce que la date correspond ?
+    //Est-ce que la date correspond ?
     const dateCours = new Date(c.debut)
     const matchDate = dateCours >= start && dateCours <= end
     
-    // B. Est-ce que la salle correspond ? (Si selectedSalle est vide, c'est bon pour toutes)
+    //Est-ce que la salle correspond ? (Si selectedSalle est vide, c'est bon pour toutes)
     const matchSalle = selectedSalle.value === '' || c.id_salle === selectedSalle.value
     
-    // C. Est-ce que le prof correspond ?
+    //Est-ce que le prof correspond ?
     const matchProf = selectedProf.value === '' || c.enseignant === selectedProf.value
 
-    // On ne garde le créneau que s'il valide LES TROIS conditions !
+  
     return matchDate && matchSalle && matchProf
   })
 })
@@ -114,7 +113,7 @@ const totalHeuresPeriode = computed(() => {
 })
 
 
-// --- 4. GRAPHIQUE 1 (Barres) ---
+//GRAPHIQUE(Barres)
 const barChartData = computed(() => {
   const heuresParSalle = {}
   store.salles.forEach(s => { heuresParSalle[s.libelle] = 0 })
@@ -154,7 +153,7 @@ const barOptions = {
 }
 
 
-// --- 5. GRAPHIQUE 2 (Anneau) ---
+//GRAPHIQUE(Anneau) ---
 const doughnutChartData = computed(() => {
   const heuresParPromo = {}
   const couleursPromo = {}

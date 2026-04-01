@@ -124,7 +124,6 @@
 </template>
 
 <script setup>
-// UN SEUL IMPORT POUR TOUT LE MONDE !
 import { ref, computed, watch, onUnmounted } from 'vue' 
 import { useIsismapStore } from '../stores/isismap'
 import Salle from '../components/Salle.vue'
@@ -132,7 +131,7 @@ import ModaleSalle from '../components/ModaleSalle.vue'
 
 const store = useIsismapStore()
 
-// ---- GESTION DE LA MODALE ----
+// GESTION DE LA MODALE 
 const salleSelectionnee = ref(null) 
 
 const ouvrirModale = (salle) => {
@@ -143,13 +142,13 @@ const fermerModale = () => {
   salleSelectionnee.value = null 
 }
 
-// ---- GESTION DES DATES ET VUES ----
+// GESTION DES DATES ET VUES 
 const currentView = ref('jour')
 
 const selectedDate = ref('')
 const selectedTime = ref('')
 
-// -- Temps Réel --
+// Temps Réel 
 const isNowActive = ref(true) 
 let intervalTimer = null 
 

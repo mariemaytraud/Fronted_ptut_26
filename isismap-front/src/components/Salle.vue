@@ -24,7 +24,7 @@ const onClick = () => {
   emit('clickSalle', props.salle)
 }
 
-// ---- LOGIQUE MODE JOUR (Temps réel) ----
+// LOGIQUE MODE JOUR (Temps réel) 
 const activeCreneau = computed(() => {
   if (props.currentView !== 'jour' || !props.selectedDate || !props.selectedTime) return null
   const currentTarget = new Date(`${props.selectedDate}T${props.selectedTime}`)
@@ -39,7 +39,7 @@ const activeCreneau = computed(() => {
 
 const roomInfo = computed(() => activeCreneau.value ? activeCreneau.value.enseignant : null)
 
-// ---- LOGIQUE MODE SEMAINE/MOIS (Heatmap) ----
+//LOGIQUE MODE SEMAINE/MOIS (Heatmap)
 const getTauxOccupation = () => {
   if (!props.dateDebut || !props.dateFin) return 0
   
