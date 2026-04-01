@@ -45,27 +45,35 @@ import { computed } from 'vue'
 import { useIsismapStore } from '../stores/isismap'
 
 const props = defineProps({
-  salle: Object
+  salle: Object,
+  dateDebut: String, // <-- Nouvelle prop !
+  dateFin: String    // <-- Nouvelle prop !
 })
 
 defineEmits(['fermer'])
 
 const store = useIsismapStore()
 
-// On filtre les créneaux pour ne garder que ceux de CETTE salle, et on les trie par date
+// On filtre par salle ET par dates !
 const creneauxDeLaSalle = computed(() => {
+  // On définit les bornes de temps (de minuit le premier jour à 23h59 le dernier)
+  const start = new Date(`${props.dateDebut}T00:00:00`)
+  const end = new Date(`${props.dateFin}T23:59:59`)
+
   return store.creneaux
-    .filter(c => c.id_salle === props.salle.id)
-    .sort((a, b) => new Date(a.debut) - new Date(b.debut))
+    .filter(c => {
+      const dateCours = new Date(c.debut)
+      // On vérifie que c'est la bonne salle ET que c'est dans la bonne période
+      return c.id_salle === props.salle.id && dateCours >= start && dateCours <= end
+    })
+    .sort((a, b) => new Date(a.debut) - new Date(b.debut)) // On trie par ordre chronologique
 })
 
-// Récupérer la couleur de la promo pour faire un joli badge
 const getCouleurPromo = (idProm) => {
   const promo = store.promotions.find(p => p.id === idProm)
   return promo ? promo.couleur : '#ccc'
 }
 
-// Petites fonctions pour formater les dates proprement (ex: "31/03/2026")
 const formatDate = (dateString) => new Date(dateString).toLocaleDateString('fr-FR')
 const formatHeure = (dateString) => new Date(dateString).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
 </script>

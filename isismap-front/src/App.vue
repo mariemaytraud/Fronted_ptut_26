@@ -1,8 +1,10 @@
 <template>
   <div class="app-container">
     <header class="header">
-      <div class="logo">
-        <h1>ISIS<span>MAP</span></h1>
+      
+      <div class="brand-container">
+        <img alt="Logo ISIS" src="./assets/logo-ISIS-vertical-RVB-HD.png" class="logo-image" />
+        <h1 class="gradient-text">ISIS MAP</h1>
       </div>
       
       <nav class="nav-menu">
@@ -30,18 +32,38 @@
   align-items: center;
   padding: 1rem 2rem;
   background-color: var(--card-bg);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Petite ombre légère sous le header */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
 }
 
-.logo h1 {
+/* =========================================
+   NOUVEAUX STYLES DU LOGO ET DU DÉGRADÉ 
+   ========================================= */
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* L'espace entre l'image et le texte */
+}
+
+.logo-image {
+  height: 45px; /* Tu peux ajuster cette taille si besoin */
+  width: auto;
+}
+
+.gradient-text {
   margin: 0;
-  color: var(--color-primary-dark);
-  font-size: 1.5rem;
+  font-size: 2rem; 
+  font-weight: 900; /* Police très épaisse */
+  font-family: 'Arial Black', Impact, sans-serif; 
+  letter-spacing: -1px; 
+  
+  /* Le dégradé exact de ta maquette (Violet vers Corail) */
+  background: linear-gradient(90deg, #AC53C6 0%, #F5695F 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
-
-.logo span {
-  color: var(--color-primary);
-}
+/* ========================================= */
 
 .nav-menu {
   display: flex;
